@@ -7,7 +7,7 @@ gameInstances[2] = new GameEscape();
 mountIcons();
 renderDashboard();
 $('#dash-season').textContent = SITE.season;
-$('#dash-foot-text').textContent = `${SITE.name} · ${SITE.openedAt} 개관`;
+$('#dash-foot-text').textContent = `${SITE.openedAt} 개관`;
 
 $('#brand-btn').onclick = () => backToDashboard();
 $('#btn-home').onclick = () => { SFX.playSelect(); backToDashboard(); };

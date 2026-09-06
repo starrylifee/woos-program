@@ -28,7 +28,7 @@
       <span class="brand-mark" aria-hidden="true">×</span>
       <span class="brand-text">
         <b>해산물과 소고기의 게임 공방</b>
-        <small>어린이가 기획하고 프로그래머가 만든 게임 작품집</small>
+        <small>해산물 × 소고기</small>
       </span>
     </button>
     <div class="topbar-right">
@@ -57,18 +57,16 @@
   <main id="view-dashboard" class="view">
     <div class="dash-head">
       <div>
-        <h1>종이에 그린 게임이 <mark>진짜 게임</mark>이 되었습니다</h1>
-        <p>기획서에 적힌 규칙과 숫자를 <b>그대로</b> 옮겼습니다. 플레이해 보고, 편지를 읽고,
-           바꾸고 싶은 숫자를 활동지에 적으면 그 값으로 다음 판을 만듭니다.
-           <span class="dash-key">키보드 <kbd>1</kbd> <kbd>2</kbd>로 바로 열립니다.</span></p>
+        <h1>게임 <mark>선택</mark></h1>
+        <p class="dash-key"><kbd>1</kbd> <kbd>2</kbd> 키로 바로 시작</p>
       </div>
       <div class="dash-season" id="dash-season"></div>
     </div>
     <div class="students" id="students"></div>
     <footer class="dash-foot">
-      <span id="dash-foot-text"></span>
+      <span>기획 해산물 · 소고기</span>
       <span class="dot"></span>
-      <span>기획 : 해산물 (3학년) · 소고기 (1학년)</span>
+      <span id="dash-foot-text"></span>
     </footer>
   </main>
 
@@ -96,7 +94,7 @@
     </div>
 
     <div class="game-body">
-      <div class="pause-badge" id="pause-badge" hidden>⏸ 일시정지 — 창을 닫으면 이어서 합니다</div>
+      <div class="pause-badge" id="pause-badge" hidden>⏸ 일시정지</div>
       <div class="stat-strip" id="stat-panel"></div>
       <div class="stage" id="scene"></div>
       <div class="dock" id="interactive-controls-container"></div>
@@ -110,7 +108,7 @@
       <h3 id="ov-title">성공!</h3>
       <p id="ov-desc"></p>
       <div class="ov-actions">
-        <button class="btn primary" id="ov-btn" type="button">다시 하기</button>
+        <button class="btn primary" id="ov-btn" type="button">다시하기</button>
         <button class="btn ghost" id="ov-home" type="button">그만하기</button>
       </div>
     </div>
@@ -134,7 +132,7 @@
   <div class="modal" id="sheet-modal" hidden>
     <div class="modal-card" role="dialog" aria-modal="true" aria-label="학생 기획안">
       <div class="modal-head">
-        <h3 id="sheet-title">학생 기획안</h3>
+        <h3 id="sheet-title">기획안</h3>
         <button class="icon-btn" id="sheet-close" type="button" aria-label="닫기">✕</button>
       </div>
       <div class="sheet-scroll" id="sheet-scroll"></div>
@@ -162,6 +160,7 @@
 <script src="js/portfolio.js"></script>
 <script src="js/review.js"></script>
 <script src="js/core.js"></script>
+<script src="js/art.js"></script>
 <script src="js/games/woodcut.js"></script>
 <script src="js/games/escape.js"></script>
 <script src="js/boot.js"></script>

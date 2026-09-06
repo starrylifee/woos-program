@@ -3,3 +3,6 @@ scripts/_stats.json
 node_modules/
 .vercel/
 *.log
+
+.vercel
+_workspace/

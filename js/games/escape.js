@@ -56,15 +56,12 @@ class GameEscape extends GameBase {
 
   buildScene() {
     this.scene.innerHTML = `
-      <div class="esc">
-        <div class="esc-ceiling"></div>
-        <div class="esc-wall left"></div>
-        <div class="esc-wall right"></div>
-        <div class="esc-floor"></div>
+      <div class="esc${window.ART && ART.corridor ? ' has-art' : ''}">
+        ${window.ART && ART.corridor ? `<div class="esc-bg">${ART.corridor}</div>` : '<div class="esc-ceiling"></div><div class="esc-wall left"></div><div class="esc-wall right"></div><div class="esc-floor"></div>'}
         <div class="esc-back">
-          <button type="button" class="esc-door" id="esc-door-0" data-side="0"><span class="esc-plate"></span><span class="esc-knob"></span></button>
+          <button type="button" class="esc-door" id="esc-door-0" data-side="0">${this.doorArt()}<span class="esc-plate"></span></button>
           <div class="esc-board"><div class="esc-board-title" id="esc-room-title"></div><div class="esc-board-q" id="esc-q"></div></div>
-          <button type="button" class="esc-door" id="esc-door-1" data-side="1"><span class="esc-plate"></span><span class="esc-knob"></span></button>
+          <button type="button" class="esc-door" id="esc-door-1" data-side="1">${this.doorArt()}<span class="esc-plate"></span></button>
         </div>
         <div class="esc-arrow" id="esc-arrow">▲</div>
         <div class="esc-avatar" id="esc-avatar">${this.avatarSVG()}</div>
@@ -80,7 +77,9 @@ class GameEscape extends GameBase {
     this.initPad();
   }
 
+  doorArt() { return (window.ART && ART.door) ? `<span class="esc-door-art">${ART.door}</span>` : '<span class="esc-knob"></span>'; }
   avatarSVG() {
+    if (window.ART && ART.avatar) return ART.avatar;
     return `<svg viewBox="0 0 120 200" aria-hidden="true">
       <ellipse cx="60" cy="194" rx="34" ry="5" fill="rgba(0,0,0,.18)"/>
       <rect x="40" y="128" width="17" height="56" rx="6" fill="#b23a3a"/><rect x="63" y="128" width="17" height="56" rx="6" fill="#b23a3a"/>
@@ -131,11 +130,11 @@ class GameEscape extends GameBase {
       { label: '오른쪽 문', key: '→', ico: icon('door'), onClick: () => this.select(1) }
     ]);
     this.ctrlGroup('', [
-      { label: '이 문으로 들어가기', sub: '고른 문에 아바타가 걸어갑니다', accent: true, key: 'Enter', id: 'esc-enter', onClick: () => this.go(this.sel) }
+      { label: '들어간다!', accent: true, key: 'Enter', id: 'esc-enter', onClick: () => this.go(this.sel) }
     ]);
     if (Number(this.P('scratchpad')) === 1) {
       this.ctrlGroup('계산', [
-        { label: '연습장', sub: '손으로 계산해 보세요', key: 'S', ico: icon('pen'), id: 'esc-pad-btn', onClick: () => this.togglePad() }
+        { label: '연습장', key: 'S', ico: icon('pen'), id: 'esc-pad-btn', onClick: () => this.togglePad() }
       ]);
     }
     this.bindKeys((e) => {
@@ -150,12 +149,11 @@ class GameEscape extends GameBase {
     const rooms = this.P('rooms');
     const rows = [
       { gauge: true, label: '방', text: `${Math.min(this.room, rooms)} / ${rooms}`, pct: ((this.room - 1) / rooms) * 100 },
-      { label: '맞힌 문제', value: this.solved, cls: 'good' },
-      { label: '처음으로 돌아감', value: this.restarts + '번', cls: this.restarts ? 'bad' : '' },
+      { label: '정답', value: this.solved, cls: 'good' },
+      { label: '처음으로', value: this.restarts + '번', cls: this.restarts ? 'bad' : '' },
       { label: '시간', value: fmtTime(this.elapsed) }
     ];
     if (this.P('timeLimit') > 0) rows.push({ label: '남은 시간', value: fmtTime(this.P('timeLimit') - this.elapsed), cls: 'warn' });
-    rows.push({ hint: '<b>←</b> <b>→</b> 로 문을 고르고 <b>Enter</b>, 또는 문을 클릭' });
     this.renderStats(rows);
   }
 
@@ -197,7 +195,7 @@ class GameEscape extends GameBase {
       this.clearTimers();
       SFX.playSuccess();
       this.after(300, () => Overlay.show(true, '탈출 성공!',
-        `방 ${rooms}개를 모두 통과했어요.<br>걸린 시간 <b>${fmtTime(this.elapsed)}</b> · 처음으로 돌아간 횟수 <b>${this.restarts}번</b> · 문을 고른 횟수 <b>${this.picks}번</b>`,
+        `시간 <b>${fmtTime(this.elapsed)}</b> · 처음으로 <b>${this.restarts}번</b> · 문 <b>${this.picks}번</b>`,
         () => this.start(), '다시하기'));
       return;
     }
@@ -206,14 +204,14 @@ class GameEscape extends GameBase {
     this.newProblem();
     this.busy = false; this.sel = 0;
     this.render();
-    toast(`${this.room - 1}번 방 통과! ${this.room}번 방`);
+    toast(`${this.room}번 방`);
   }
 
   failRoom() {
     SFX.playFailure();
     const msg = $('#esc-msg');
     const pen = this.P('penalty');
-    const text = pen === 'restart' ? '처음으로 이동합니다.' : pen === 'back1' ? '한 방 뒤로 갑니다.' : '이 방을 다시 풉니다.';
+    const text = pen === 'restart' ? '처음으로 이동합니다.' : pen === 'back1' ? '한 방 뒤로.' : '다시.';
     msg.innerHTML = `<b>오답</b><span>${text}</span>`;
     msg.className = 'esc-msg show';
     this.after(1500, () => {
@@ -231,7 +229,7 @@ class GameEscape extends GameBase {
     const lim = this.P('timeLimit');
     if (lim > 0 && !this.done && this.elapsed >= lim) {
       this.done = true; this.clearTimers();
-      Overlay.show(false, '시간 초과', `${fmtTime(lim)} 안에 탈출하지 못했어요. 방 ${this.room}까지 갔습니다.`, () => this.start());
+      Overlay.show(false, '시간 초과', `${this.room}번 방까지`, () => this.start());
     }
   }
 

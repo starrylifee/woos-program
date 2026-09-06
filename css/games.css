@@ -182,3 +182,14 @@
   .wc-feedback { font-size: 48px; }
   .wc-tree-wrap { width: 160px; }
 }
+
+/* ── SVG 애셋(js/art.js) 배치 ── */
+.ico.art svg { width: 100%; height: 100%; display: block; }
+.esc-bg { position: absolute; inset: 0; }
+.esc-bg svg { width: 100%; height: 100%; display: block; }
+.esc.has-art .esc-back { background: transparent; border-bottom: 0; }
+.esc-door-art { position: absolute; inset: 0; display: block; }
+.esc-door-art svg { width: 100%; height: 100%; display: block; }
+.esc.has-art .esc-door { background: transparent; border: 0; border-radius: 0; }
+.esc.has-art .esc-door.sel { box-shadow: none; }
+.esc.has-art .esc-door.sel .esc-door-art { filter: drop-shadow(0 0 0 #ffd54a) drop-shadow(0 0 6px #ffd54a); }

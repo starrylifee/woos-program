@@ -271,7 +271,7 @@ function enterGame(id, v) {
   $('#view-game').style.setProperty('--c', d.color);
   $('#gh-num').textContent = String(id).padStart(2, '0');
   $('#gh-title').textContent = d.title;
-  $('#gh-student').textContent = `기획 : ${d.student} (${d.grade}학년)`;
+  $('#gh-student').textContent = `기획 ${d.student}`;
   $('#gh-concept').textContent = d.concept;
   $('#gh-review-text').innerHTML = d.aiReview;
   const vb = $('#gh-versions');
@@ -312,11 +312,10 @@ function renderDashboard() {
           <p class="stu-tag">${s.tag}</p>
         </div>
         <div class="stu-meta">
-          <span>작품 <b>${works.length}</b></span>
+          <span>게임 <b>${works.length}</b></span>
           <span>편지 <b>${letters.length}</b></span>
         </div>
       </header>
-      <p class="stu-intro">${s.intro}</p>
       <div class="work-list"></div>`;
     const list = $('.work-list', col);
     works.forEach((w) => {
@@ -354,7 +353,7 @@ function openSheet(id) {
   pauseGame();
   const ids = id ? [id] : (currentId ? [currentId] : WORKS.map((w) => w.id));
   const one = ids.length === 1 ? gamesData[ids[0]] : null;
-  $('#sheet-title').textContent = one ? `${one.title} — 기획 : ${one.student}` : `기획안 전체 — ${ids.length}편`;
+  $('#sheet-title').textContent = one ? `${one.title} 기획안` : '기획안 전체';
   const box = $('#sheet-scroll');
   box.innerHTML = '';
   ids.forEach((gid) => {
@@ -382,7 +381,7 @@ function openLetter(studentId, v) {
   const L = v ? letters.find((x) => x.v === v) : letters[letters.length - 1];
   const m = $('#letter-modal');
   m.style.setProperty('--c', s.color);
-  $('#letter-title').textContent = `${s.nick}에게 온 편지`;
+  $('#letter-title').textContent = `${s.nick}에게`;
   $('#letter-tabs').innerHTML = letters.length > 1
     ? letters.map((x) => `<button type="button" class="vchip${x.v === L.v ? ' on' : ''}" data-v="${x.v}">${x.v}번째</button>`).join('') : '';
   $$('#letter-tabs .vchip').forEach((c) => { c.onclick = () => openLetter(sid, Number(c.dataset.v)); });

@@ -37,13 +37,14 @@ class GameWoodcut extends GameBase {
 
   get tools() {
     return [
-      { key: 'axe',    name: '도끼', price: this.P('priceAxe'),    ico: 'axe' },
-      { key: 'saw',    name: '톱',   price: this.P('priceSaw'),    ico: 'saw' },
-      { key: 'twin',   name: '쌍톱', price: this.P('priceTwin'),   ico: 'saw' },
-      { key: 'silver', name: '은톱', price: this.P('priceSilver'), ico: 'saw' },
-      { key: 'gold',   name: '금톱', price: this.P('priceGold'),   ico: 'saw' }
+      { key: 'axe',    name: '도끼', price: this.P('priceAxe'),    art: 'axe' },
+      { key: 'saw',    name: '톱',   price: this.P('priceSaw'),    art: 'saw' },
+      { key: 'twin',   name: '쌍톱', price: this.P('priceTwin'),   art: 'twinSaw' },
+      { key: 'silver', name: '은톱', price: this.P('priceSilver'), art: 'silverSaw' },
+      { key: 'gold',   name: '금톱', price: this.P('priceGold'),   art: 'goldSaw' }
     ];
   }
+  toolIcon(t, cls = '') { return (window.ART && ART[t.art]) ? `<span class="ico art ${cls}">${ART[t.art]}</span>` : icon(t.art === 'axe' ? 'axe' : 'saw', cls); }
   bonusOf(t) { return Math.round(t.price * this.P('bonusRate')); }
   coinsPerTree() { return this.P('coinPerTree') + this.tools.reduce((s, t) => s + (this.owned[t.key] || 0) * this.bonusOf(t), 0); }
   kindsOwned() { return this.tools.filter((t) => this.owned[t.key] > 0).length; }
@@ -84,6 +85,7 @@ class GameWoodcut extends GameBase {
   }
 
   treeSVG() {
+    if (window.ART && ART.tree) return ART.tree;
     return `<svg viewBox="0 0 160 260" aria-hidden="true">
       <g class="trunk"><rect x="62" y="110" width="36" height="150" rx="6" fill="#b5654a"/>
         <path d="M72 120v130M86 128v122M79 116v138" stroke="#9a4f38" stroke-width="3" stroke-linecap="round" opacity=".7"/></g>
@@ -94,6 +96,7 @@ class GameWoodcut extends GameBase {
     </svg>`;
   }
   stumpSVG() {
+    if (window.ART && ART.stump) return ART.stump;
     return `<svg viewBox="0 0 80 60" aria-hidden="true"><rect x="14" y="16" width="52" height="44" rx="8" fill="#b5654a"/><ellipse cx="40" cy="16" rx="26" ry="10" fill="#d9a67e"/><ellipse cx="40" cy="16" rx="14" ry="5" fill="none" stroke="#b5654a" stroke-width="2"/></svg>`;
   }
 
@@ -105,23 +108,23 @@ class GameWoodcut extends GameBase {
     $('#wc-answer').innerHTML = `<span class="wc-ans-label">답</span><span class="wc-ans-box">${this.input || '<i>?</i>'}</span>`;
     const owned = this.tools.filter((t) => this.owned[t.key] > 0);
     $('#wc-tools').innerHTML = owned.length
-      ? owned.map((t) => `<span class="wc-tool" title="${t.name}">${icon(t.ico, 'sm')} ${t.name}${this.owned[t.key] > 1 ? ' ×' + this.owned[t.key] : ''}</span>`).join('')
-      : '<span class="wc-tool none">아직 도구가 없어요 (맨손)</span>';
+      ? owned.map((t) => `<span class="wc-tool" title="${t.name}">${this.toolIcon(t, 'sm')} ${t.name}${this.owned[t.key] > 1 ? ' ×' + this.owned[t.key] : ''}</span>`).join('')
+      : '<span class="wc-tool none">맨손</span>';
   }
 
   renderShop() {
     const box = $('#wc-shop');
     const kinds = this.kindsOwned();
     box.innerHTML = `
-      <div class="wc-shop-head"><span>상점 <span class="wc-shop-sub">${this.P('maxPerItem')}개씩</span></span><span class="wc-goal">도구 <b>${kinds}</b> / ${this.P('winTools')}</span></div>
+      <div class="wc-shop-head"><span>상점 </span><span class="wc-goal">도구 <b>${kinds}</b> / ${this.P('winTools')}</span></div>
       <div class="wc-money" id="wc-money"><span>돈</span><b>${won(this.money)}</b></div>
       <div class="wc-items">
         ${this.tools.map((t) => {
           const n = this.owned[t.key];
           const can = !this.busy && !this.done && this.money >= t.price && n < this.P('maxPerItem');
           return `<button type="button" class="wc-item${n ? ' owned' : ''}" data-tool="${t.key}" ${can ? '' : 'disabled'}>
-            <span class="wc-item-ico">${icon(t.ico)}</span>
-            <span class="wc-item-body"><b>${t.name}</b><small>나무 하나에 +${won(this.bonusOf(t))}</small></span>
+            <span class="wc-item-ico">${this.toolIcon(t)}</span>
+            <span class="wc-item-body"><b>${t.name}</b><small>+${won(this.bonusOf(t))}/그루</small></span>
             <span class="wc-item-right"><b>${won(t.price)}</b><small>${n}/${this.P('maxPerItem')}</small></span>
           </button>`;
         }).join('')}
@@ -138,7 +141,7 @@ class GameWoodcut extends GameBase {
       { label: '지우기', key: '⌫', cls: 'num wide', onClick: () => this.type('back') }
     ]), 'numpad');
     this.ctrlGroup('', [
-      { label: '나무 캐기', sub: '답을 쓰고 누르세요', ico: icon('axe'), accent: true, key: 'Enter', id: 'wc-chop', onClick: () => this.chop() }
+      { label: '나무 캐기', ico: icon('axe'), accent: true, key: 'Enter', id: 'wc-chop', onClick: () => this.chop() }
     ]);
     this.bindKeys((e) => {
       if (e.key >= '0' && e.key <= '9') { this.type(e.key); e.preventDefault(); }
@@ -153,8 +156,7 @@ class GameWoodcut extends GameBase {
       { label: '나무', value: num(this.trees) + '그루' },
       { label: '정답', value: this.correct, cls: 'good' },
       { label: '오답', value: this.wrong, cls: 'bad' },
-      { label: '나무 하나에', value: won(this.coinsPerTree()) },
-      { hint: '숫자를 쓰고 <b>나무를 클릭</b>하거나 <b>Enter</b>' }
+      { label: '한 그루', value: won(this.coinsPerTree()) }
     ]);
   }
 
@@ -168,7 +170,7 @@ class GameWoodcut extends GameBase {
 
   chop() {
     if (this.busy || this.done) return;
-    if (!this.input) { toast('먼저 답을 써 주세요'); return; }
+    if (!this.input) { toast('답부터 쓰자!'); return; }
     const fb = $('#wc-feedback');
     const treeWrap = $('#wc-tree-wrap');
     if (Number(this.input) === this.problem.ans) {
@@ -213,7 +215,7 @@ class GameWoodcut extends GameBase {
     this.money -= t.price; this.owned[key]++;
     this.log.push({ buy: t.name, price: t.price });
     SFX.playBuy();
-    toast(`${t.name}을(를) 샀어요. 이제 나무 하나에 ${won(this.coinsPerTree())}`);
+    toast(`${t.name} 획득! 한 그루 ${won(this.coinsPerTree())}`);
     this.render();
     this.checkWin();
   }
@@ -223,18 +225,18 @@ class GameWoodcut extends GameBase {
     if (this.kindsOwned() >= this.P('winTools')) {
       this.done = true;
       this.renderShop();
-      Overlay.show(true, '성공! 도구를 다 모았어요', this.summaryHTML(), () => this.start());
+      Overlay.show(true, '클리어!', this.summaryHTML(), () => this.start());
     }
   }
   quit() {
     if (this.done) return;
     this.done = true;
     this.renderShop();
-    Overlay.show(true, '여기까지 했어요', this.summaryHTML(), () => this.start(), '다시 하기', 'silent');
+    Overlay.show(true, '종료', this.summaryHTML(), () => this.start(), '다시하기', 'silent');
   }
   summaryHTML() {
-    return `나무 <b>${this.trees}그루</b>를 캤고, 정답 <b>${this.correct}번</b> · 오답 <b>${this.wrong}번</b>.<br>
-            도구 <b>${this.kindsOwned()}가지</b>, 남은 돈 <b>${won(this.money)}</b>.`;
+    return `나무 <b>${this.trees}그루</b> · 정답 <b>${this.correct}</b> · 오답 <b>${this.wrong}</b><br>
+            도구 <b>${this.kindsOwned()}가지</b> · 남은 돈 <b>${won(this.money)}</b>`;
   }
   cleanup() { super.cleanup(); }
 }

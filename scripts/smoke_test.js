@@ -7,7 +7,7 @@ const path = require('path');
 const { JSDOM } = require('jsdom');
 
 const ROOT = path.resolve(__dirname, '..');
-const files = ['js/portfolio.js', 'js/review.js', 'js/core.js', 'js/games/woodcut.js', 'js/games/escape.js', 'js/boot.js'];
+const files = ['js/portfolio.js', 'js/review.js', 'js/core.js', 'js/art.js', 'js/games/woodcut.js', 'js/games/escape.js', 'js/boot.js'];
 
 const dom = new JSDOM(fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8'),
   { runScripts: 'outside-only', pretendToBeVisual: true, url: 'http://localhost/' });
@@ -51,7 +51,7 @@ const check = (c, m) => (c ? ok : bad).push(m);
   wrap(() => window.enterGame(1));
   const a = g(1);
   check($('#view-game').hidden === false, 'G1 진입');
-  check($('#gh-student').textContent.includes('소고기') && $('#gh-student').textContent.includes('1학년'), 'G1 헤더에 기획자·학년');
+  check($('#gh-student').textContent.includes('소고기'), 'G1 헤더에 기획자');
   check($$('#gh-versions .vchip').length === 1 && $('#gh-versions .vchip.on').textContent === 'v1', 'G1 버전 칩 v1');
   check($$('#interactive-controls-container .abtn').length === 12, 'G1 숫자패드 11 + 캐기 1');
   check($$('.wc-item').length === 5, 'G1 상점 도구 5개');
@@ -94,7 +94,7 @@ const check = (c, m) => (c ? ok : bad).push(m);
     await sleep(1000);
   }
   check(a.done === true, `G1 클리어 — 나무 ${a.trees}그루, 구매 ${buys.length}회 (guard=${guard})`);
-  check($('#overlay').hidden === false && $('#ov-title').textContent.includes('성공'), 'G1 성공 오버레이');
+  check($('#overlay').hidden === false && $('#ov-title').textContent.includes('클리어'), 'G1 클리어 오버레이');
   console.log('   G1 구매 순서:', buys.join(' → '));
   console.log(`   G1 최종: 나무 ${a.trees}그루 · 정답 ${a.correct} · 오답 ${a.wrong} · 남은 돈 ${a.money} · 나무 하나에 ${a.coinsPerTree()}원`);
   const g1Stats = { trees: a.trees, coinsPerTreeEnd: a.coinsPerTree() };
@@ -121,7 +121,7 @@ const check = (c, m) => (c ? ok : bad).push(m);
   /* ── 종료 버튼 (다시 시작 후) ── */
   wrap(() => window.enterGame(1));
   wrap(() => $('#wc-quit').click());
-  check(a.done === true && $('#ov-title').textContent.includes('여기까지'), 'G1 종료 버튼 → 요약');
+  check(a.done === true && $('#ov-title').textContent === '종료', 'G1 종료 버튼 → 요약');
 
   wrap(() => window.backToDashboard());
   check($('#scene').innerHTML === '', '게임 나갈 때 무대 비움');
