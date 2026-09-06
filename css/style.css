@@ -254,7 +254,7 @@ mark { background: linear-gradient(transparent 45%, rgba(29,127,143,.22) 45%, rg
   padding: 10px 14px; border: 1px solid var(--line-2); border-radius: var(--r);
   background: var(--surface); min-height: 78px;
 }
-.ctrl-group { display: flex; flex-direction: column; gap: 5px; }
+.ctrl-group { display: flex; flex-direction: column; justify-content: flex-end; gap: 5px; }  /* 제목 없는 그룹도 버튼 줄이 아래로 맞춰짐 */
 .cg-title { font-size: 12px; font-weight: 800; letter-spacing: .08em; color: var(--text-3); padding-left: 2px; }
 .cg-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: stretch; }
 
@@ -282,7 +282,7 @@ mark { background: linear-gradient(transparent 45%, rgba(29,127,143,.22) 45%, rg
 }
 .abtn.accent.key::after { background: rgba(255,255,255,.2); color: #fff; border-color: rgba(255,255,255,.4); }
 /* 숫자패드 */
-.abtn.num { min-width: 46px; min-height: 46px; padding: 0; justify-content: center; font-family: var(--mono); font-size: 19px; }
+.abtn.num { min-width: 48px; min-height: 50px; padding: 0; justify-content: center; font-family: var(--mono); font-size: 19px; }
 .abtn.num.wide { min-width: 80px; font-family: var(--font); font-size: 14px; }
 
 /* ── 오버레이 ───────────────────────────────────── */
