@@ -296,6 +296,13 @@ function backToDashboard() {
 }
 
 /* ── 8. 홈 (포트폴리오) ──────────────────────────── */
+/** 작품 카드 표지 — js/art.js 애셋으로 무대 미니 장면 */
+function coverHTML(key) {
+  const A = window.ART || {};
+  if (key === 'woodcut') return `<div class="cv-sky"></div><div class="cv-ground"></div><div class="cv-tree">${A.tree || ''}</div><div class="cv-stump">${A.stump || ''}</div>`;
+  if (key === 'escape') return `<div class="cv-corridor">${A.corridor || ''}</div><div class="cv-door l">${A.door || ''}</div><div class="cv-door r">${A.door || ''}</div><div class="cv-avatar">${A.avatar || ''}</div>`;
+  return '';
+}
 function renderDashboard() {
   const wrap = $('#students');
   wrap.innerHTML = '';
@@ -324,6 +331,7 @@ function renderDashboard() {
       const latest = vers[vers.length - 1];
       const card = el('article', 'gcard');
       card.innerHTML = `
+        <div class="gcard-cover cover-${w.key}">${coverHTML(w.key)}</div>
         <div class="gcard-top">
           <span class="gcard-num">GAME ${String(w.id).padStart(2, '0')}</span>
           <span class="gcard-ver">v${latest.v} · ${latest.label}</span>

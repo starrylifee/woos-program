@@ -38,6 +38,8 @@ css/games.css             게임별 무대 스타일 (.wc-* 나무캐기 / .esc-
 js/portfolio.js           ★ 학생 · 작품 · 편지 (포트폴리오 데이터의 단일 출처)
 js/review.js              ★ 평가 기준 · 게임별 평가 데이터 · 평가서 HTML
 js/core.js                효과음 / 아이콘 / GameBase / 라우터 / 모달
+js/art.js                 ★ 게임 그림 SVG 10종 (svg-quality-loop 3회차 90점 합격) — 게임 코드는 ART.키만 읽음
+docs/art-brief.md         그림 스타일 가이드·루브릭 / docs/art-grade-final.md 최종 채점표
 js/games/woodcut.js       ★ GAME 01 — paramSpec(숫자) + versions(버전 기록) 맨 위
 js/games/escape.js        ★ GAME 02 — 〃
 js/boot.js                인스턴스 등록 + 전역 이벤트
