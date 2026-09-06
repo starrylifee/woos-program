@@ -282,6 +282,11 @@ function versionChipsHTML(g) {
 function renderLevelChips(g) {
   const box = $('#gh-levels');
   if (!box) return;
+  if (g.customLevels) {
+    box.innerHTML = WORLD_LEVELS.slice(0, g.P('levelCount')).map((name, i) => `<button type="button" class="vchip lv${i + 1 === g.level ? ' on' : ''}" data-lv="${i + 1}" ${i + 1 > g.unlocked ? 'disabled' : ''} title="${name}">${i + 1 > g.unlocked ? '잠김 ' : i + 1 <= g.completed ? '✓ ' : ''}레벨 ${i + 1}</button>`).join('');
+    $$('.vchip', box).forEach((b) => { b.onclick = () => { SFX.playSelect(); g.setLevel(Number(b.dataset.lv)); }; });
+    return;
+  }
   box.innerHTML = PROBLEMS.levels.map((L) =>
     `<button type="button" class="vchip lv${L.lv === g.level ? ' on' : ''}" data-lv="${L.lv}" title="${L.name} · ${L.hint}${L.lv === g.defaultLevel ? ' · 기획서 기본' : ''}">${L.name}</button>`).join('');
   $$('.vchip', box).forEach((c) => { c.onclick = () => { SFX.playSelect(); g.setLevel(Number(c.dataset.lv)); renderLevelChips(g); }; });
@@ -305,7 +310,8 @@ function enterGame(id, v) {
   $$('.vchip', vb).forEach((c) => { c.onclick = () => { SFX.playSelect(); enterGame(id, Number(c.dataset.v)); }; });
   const ver = g.versions.find((x) => x.v === g.version);
   $('#gh-vlabel').textContent = ver ? `${ver.label}${ver.date ? ' · ' + ver.date : ''}` : '';
-  g.level = PROBLEMS.load(id, g.defaultLevel);
+  if (g.customLevels) g.prepareLevel();
+  else g.level = PROBLEMS.load(id, g.defaultLevel);
   renderLevelChips(g);
   $('#scene').innerHTML = ''; $('#interactive-controls-container').innerHTML = ''; $('#stat-panel').innerHTML = '';
   showView('game');
@@ -327,6 +333,7 @@ function backToDashboard() {
 /** 작품 카드 표지 — js/art.js 애셋으로 무대 미니 장면 */
 function coverHTML(key) {
   const A = window.ART || {};
+  if (key === 'world') return '<div class="world-globe" aria-hidden="true"></div><span class="world-sign">세계탐험하기</span>';
   if (key === 'woodcut') return `<div class="cv-sky"></div><div class="cv-ground"></div><div class="cv-tree">${A.tree || ''}</div><div class="cv-stump">${A.stump || ''}</div>`;
   if (key === 'escape') return `<div class="cv-corridor">${A.corridor || ''}</div><div class="cv-door l">${A.door || ''}</div><div class="cv-door r">${A.door || ''}</div><div class="cv-avatar">${A.avatar || ''}</div>`;
   return '';
@@ -376,7 +383,7 @@ function renderDashboard() {
           <button type="button" class="btn ghost" data-act="sheet">${icon('sheet', 'sm')} 기획안</button>
         </div>`;
       $('[data-act=play]', card).onclick = () => { SFX.playSelect(); enterGame(w.id); };
-      $('[data-act=letter]', card).onclick = () => { openLetter(s.id); };
+      $('[data-act=letter]', card).onclick = () => { openLetter(s.id, null, w.key); };
       $('[data-act=sheet]', card).onclick = () => { openSheet(w.id); };
       list.appendChild(card);
     });
@@ -407,19 +414,20 @@ function openSheet(id) {
 }
 
 /* ── 10. 편지 ────────────────────────────────────── */
-function openLetter(studentId, v) {
+function openLetter(studentId, v, workKey) {
   pauseGame();
   const sid = studentId || (currentId ? gamesData[currentId].studentId : null);
   if (!sid) return;
   const s = STUDENTS[sid];
   const letters = LETTERS[sid] || [];
   if (!letters.length) return;
-  const L = v ? letters.find((x) => x.v === v) : letters[letters.length - 1];
+  const key = workKey || (currentId ? gamesData[currentId].key : null);
+  const L = (v != null ? letters.find((x, i) => i === v) : null) || letters.filter((x) => x.work === key).slice(-1)[0] || letters[letters.length - 1];
   const m = $('#letter-modal');
   m.style.setProperty('--c', s.color);
   $('#letter-title').textContent = `${s.nick}에게`;
   $('#letter-tabs').innerHTML = letters.length > 1
-    ? letters.map((x) => `<button type="button" class="vchip${x.v === L.v ? ' on' : ''}" data-v="${x.v}">${x.v}번째</button>`).join('') : '';
+    ? letters.map((x, i) => `<button type="button" class="vchip${x === L ? ' on' : ''}" data-v="${i}">${x.title} · v${x.v}</button>`).join('') : '';
   $$('#letter-tabs .vchip').forEach((c) => { c.onclick = () => openLetter(sid, Number(c.dataset.v)); });
   $('#letter-body').innerHTML = `
     <div class="letter-paper">

@@ -114,8 +114,9 @@ const REVIEWS = {
 function reviewHTML(id) {
   const R = REVIEWS[id];
   if (!R) return '';
+  const criteria = R.criteria || REVIEW_CRITERIA;
   const counts = { O: 0, '△': 0, X: 0 };
-  REVIEW_CRITERIA.forEach((c) => { counts[R.marks[c.key].m]++; });
+  criteria.forEach((c) => { counts[R.marks[c.key].m]++; });
   return `
   <article class="rv" style="--c:${R.color}">
     <header class="rv-head">
@@ -134,7 +135,7 @@ function reviewHTML(id) {
       <table class="rv-table">
         <thead><tr><th style="width:34px"></th><th style="width:170px">항목</th><th>판정 근거</th></tr></thead>
         <tbody>
-          ${REVIEW_CRITERIA.map((c) => {
+          ${criteria.map((c) => {
             const m = R.marks[c.key]; const K = REVIEW_MARK[m.m];
             return `<tr><td class="rv-mark ${K.cls}">${K.sym}</td><td class="rv-name">${c.name}<span>${c.desc}</span></td><td class="rv-note">${m.note}</td></tr>`;
           }).join('')}

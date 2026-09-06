@@ -1,0 +1,58 @@
+﻿const assert = require('node:assert/strict');
+const fs = require('fs');
+const path = require('path');
+const { JSDOM } = require('jsdom');
+const root = path.resolve(__dirname, '..');
+const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+const files = [...html.matchAll(/<script src="([^"]+)"/g)].map(m => m[1]);
+const dom = new JSDOM(html, { runScripts:'outside-only', pretendToBeVisual:true, url:'https://test.local' });
+const w = dom.window;
+w.HTMLCanvasElement.prototype.getContext = () => null;
+w.eval(files.map(f => fs.readFileSync(path.join(root,f),'utf8')).join('\n;\n') + '\n;window.api={gameInstances,enterGame,backToDashboard,openReview,openLetter,closeModal,WORLD_QUESTIONS,SFX};');
+const a = w.api; a.SFX.on=false;
+const g = a.gameInstances[3];
+let count = 0;
+function check(c,m) { assert.ok(c,m); count++; }
+function right() { g.answer(g.question.choices.indexOf(g.question.answer)); g.advance(); }
+a.enterGame(3);
+check(g.level===1 && g.unlocked===1 && w.document.querySelectorAll('#gh-levels button:disabled').length===4,'initial locks');
+g.setLevel(5); check(g.level===1,'locked level cannot be entered');
+check(a.WORLD_QUESTIONS.length===40,'40 authored questions');
+for (const q of a.WORLD_QUESTIONS) check(q.choices.length===4 && new Set(q.choices).size===4 && q.choices.filter(c=>c===q.answer).length===1 && !!q.explanation,'unique choices: '+q.id);
+for(let lv=1;lv<=5;lv++) {
+  check(g.level===lv && g.round.length===10,'level '+lv+' has ten questions');
+  check(new Set(g.round.map(q=>q.id)).size===10,'no duplicate questions');
+  check(g.round.every((q,i)=>q.region===Math.floor(i/2)), 'region order');
+  for(let i=0;i<10;i++) right();
+  check(g.done && g.attempts===10 && g.position===10,'level completion '+lv);
+  check(g.completed===lv && g.unlocked===Math.min(5,lv+1),'unlock '+lv);
+  if(lv<5) w.document.querySelector('#world-next-level').click();
+}
+check(!w.document.querySelector('#world-next-level'),'final level has no sixth level');
+a.backToDashboard(); a.enterGame(3);
+check(g.level===5 && g.completed===5,'progress survives revisit');
+g.setLevel(2);
+for(let i=0;i<9;i++) right();
+g.answer(g.question.choices.findIndex(c=>c!==g.question.answer));
+check(g.feedback && !g.feedback.right && g.position===9,'wrong explanation before restart');
+const picks=g.attempts; g.answer(0); check(g.attempts===picks,'double submission ignored');
+g.advance(); check(g.position===0 && g.restarts===1 && g.unlocked===5 && g.level===2,'restart current level only');
+for(let i=0;i<10;i++) right();
+check(g.done && g.attempts===20,'9 right + wrong + 10 right = 20 selections');
+g.setLevel(1); a.openReview();
+check(w.document.querySelector('#review-scroll').textContent.includes('지리를 배울 수 있는가'),'geography review');
+g.answer(0); check(g.attempts===0,'modal pauses answers');
+g.setLevel(2); check(g.level===1,'modal pauses level changes');
+a.closeModal('review-modal');
+a.openLetter(); check(w.document.querySelector('#letter-body').textContent.includes('다섯 곳을 여행'),'world letter');
+a.closeModal('letter-modal'); a.enterGame(2); a.openLetter();
+check(w.document.querySelector('#letter-body').textContent.includes('규칙이 세 줄'),'escape letter preserved');
+a.closeModal('letter-modal'); a.enterGame(3);
+w.localStorage.setItem(g.progressKey(),'broken'); a.enterGame(3);
+check(g.level===1 && g.unlocked===1,'corrupt saved progress falls back');
+g.answer(g.question.choices.indexOf(g.question.answer));
+a.openReview(); g.advance(); check(g.position===0,'paused feedback cannot advance');
+a.closeModal('review-modal'); g.advance(); check(g.position===1,'resume feedback');
+a.backToDashboard(); check(g.keyHandler===null && g._timers.size===0,'cleanup');
+console.log('WORLD PASS '+count+' assertions; 5 levels / 50 correct; last-question failure finishes in 20 picks.');
+dom.window.close();

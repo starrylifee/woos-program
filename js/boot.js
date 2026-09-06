@@ -3,6 +3,7 @@
    ═══════════════════════════════════════════════════ */
 gameInstances[1] = new GameWoodcut();
 gameInstances[2] = new GameEscape();
+gameInstances[3] = new GameWorld();
 
 mountIcons();
 renderDashboard();
@@ -40,3 +41,12 @@ window.addEventListener('keydown', (e) => {
 
 /* 첫 사용자 제스처에서 오디오 컨텍스트 해제 */
 window.addEventListener('pointerdown', function once() { SFX._ac(); window.removeEventListener('pointerdown', once); }, { once: true });
+
+/* 작품·버전 기록에서 바로 플레이. 유효한 공개 작품과 버전만 허용한다. */
+const initialRoute = new URLSearchParams(location.search);
+const initialGameId = Number(initialRoute.get('game'));
+if (gameInstances[initialGameId]) {
+  const requestedVersion = Number(initialRoute.get('v'));
+  const validVersion = gameInstances[initialGameId].versions.some(v => v.v === requestedVersion);
+  enterGame(initialGameId, validVersion ? requestedVersion : undefined);
+}

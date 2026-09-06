@@ -1,0 +1,51 @@
+/* 학생의 팻말·국기·사선 없는 4지선다를 기존 크레용 스케치북에 맞춤. */
+.world-stage { height:100%; overflow:auto; padding:16px 22px; background:#faf3df; background-image:repeating-linear-gradient(0deg,transparent,transparent 27px,#85643b0a 28px); }
+.world-route { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-bottom:16px; }
+.world-route span { padding:6px 12px; border-bottom:2px dashed #cbbf9e; font-size:14px; color:#655a44; }
+.world-route .on { background:#1d7f8f; color:white; border:0; border-radius:3px; font-weight:800; }
+.world-route .visited { color:#36713d; border-color:#36713d; }
+.world-layout { display:grid; grid-template-columns:minmax(180px,.7fr) minmax(0,1.5fr); gap:32px; max-width:1100px; margin:auto; align-items:center; }
+.world-picture { display:flex; flex-direction:column; align-items:center; gap:22px; }
+.world-sign { display:inline-block; background:#e1b379; border:2px solid #815733; padding:10px 28px; color:#513d28; font-size:25px; font-weight:800; transform:rotate(-2deg); box-shadow:3px 3px 0 #ad87593b; }
+.world-picture-note { font-size:13px; color:#675e49; }
+.world-flag { width:180px; height:120px; border:2px solid #514539; background:#fff; position:relative; transform:rotate(2deg); box-shadow:5px 5px 0 #bdaa8233; }
+.world-flag.japan:after { content:''; position:absolute; width:72px; height:72px; border-radius:50%; background:#bf2644; top:22px; left:52px; }
+.world-flag.france { background:linear-gradient(90deg,#173b8e 33.33%,white 33.33%,white 66.66%,#d63c46 66.66%); }
+.world-passport { width:180px; padding:14px; border:2px solid #416c68; background:#e1ebe0; border-radius:4px 13px 13px 4px; text-align:center; color:#36534d; box-shadow:5px 5px 0 #bdaa8233; transform:rotate(2deg); }
+.world-passport span,.world-passport small { display:block; font-size:11px; }
+.world-passport b { display:block; font-size:20px; margin:7px 0; }
+.world-globe { width:76px; height:76px; border:2px solid #4a7b70; border-radius:50%; margin:12px auto; position:relative; background:repeating-linear-gradient(0deg,transparent 0 22px,#4a7b7044 23px 24px); }
+.world-globe:after { content:''; position:absolute; inset:-2px 17px; border:2px solid #4a7b70; border-radius:50%; }
+.world-pyramids { width:220px; height:130px; display:flex; align-items:flex-end; justify-content:center; background:linear-gradient(#dcebe8 65%,#e6c48e 65%); }
+.world-pyramids i { width:90px; height:90px; margin:0 -16px 15px; background:linear-gradient(110deg,#e1b979 50%,#ae7b47 50%); clip-path:polygon(50% 0,100% 100%,0 100%); }
+.world-pyramids i:nth-child(2) { width:120px; height:115px; }
+.world-kicker { font-size:13px; color:#76654b; }
+.world-quiz h2 { font-size:clamp(20px,1.8vw,27px); line-height:1.45; margin:7px 0 16px; word-break:keep-all; }
+.world-choices { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.world-choice { display:flex; align-items:center; gap:10px; min-height:57px; padding:10px 13px; border:2px solid #b7a884; border-radius:5px; background:#fffdf7; color:#342e24; font:inherit; font-size:18px; text-align:left; cursor:pointer; }
+.world-choice>span { flex:none; display:grid; place-items:center; width:26px; height:26px; border:1px solid #b7a884; border-radius:50%; font-size:14px; }
+.world-choice:hover:not(:disabled) { background:#f2e5c8; border-color:#1d7f8f; }
+.world-choice:focus-visible,.world-end-actions button:focus-visible { outline:3px solid #1d7f8f; outline-offset:3px; }
+.world-choice:disabled { opacity:1; cursor:default; }
+.world-choice.correct { border-color:#397543; background:#e9f3e6; }
+.world-choice.wrong { border-color:#b8452b; background:#f9e9e1; }
+.world-choice b { margin-left:auto; font-size:12px; white-space:nowrap; }
+.world-feedback { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:88px; padding:12px 0 0; font-size:14px; line-height:1.6; color:#665c48; }
+.world-feedback strong { color:#36713d; }
+.world-feedback.wrong strong { color:#a53c27; }
+.world-feedback .btn { flex:none; }
+.world-guide { margin:auto 0; font-size:13px; line-height:1.5; color:var(--text-2); }
+.world-complete { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; text-align:center; }
+.world-complete h2 { font-size:34px; color:#36713d; }
+.world-complete p { font-size:16px; }
+.world-stamps { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; }
+.world-stamps span { padding:10px; border:2px dashed #448052; color:#36713d; font-weight:800; transform:rotate(-3deg); }
+.world-end-actions { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+.vchip.lv:disabled { opacity:.55; cursor:not-allowed; }
+.cover-world { display:flex; align-items:center; justify-content:center; gap:35px; background:#ede3c7; }
+.cover-world .world-sign { font-size:22px; }
+.cover-world .world-globe { width:92px; height:92px; margin:10px; background-color:#dce9df; }
+/* 3개 작품을 1366×768에서 함께 볼 수 있도록 학생별 목록을 나란히 배치. */
+@media(min-width:1100px) { .students { grid-template-columns:1.8fr 1fr; } .stu:first-child .work-list { grid-template-columns:1fr 1fr; } .gcard-actions { flex-wrap:wrap; } .gcard-actions .btn { padding:0 10px; } .cover-world { gap:4px; flex-direction:column; } }
+@media(max-height:800px) and (min-width:721px) { .world-stage { padding:10px 20px; } .world-route { margin-bottom:10px; } .world-picture { gap:14px; } .world-sign { padding:7px 22px; font-size:23px; } .world-passport { padding:10px; } .world-quiz h2 { margin-bottom:12px; } }
+@media(max-width:720px) { .world-stage { padding:12px; } .world-layout { grid-template-columns:1fr; gap:16px; } .world-picture { flex-direction:row; flex-wrap:wrap; justify-content:center; gap:14px; } .world-picture-note { width:100%; text-align:center; } .world-passport { display:none; } .world-flag { width:120px; height:80px; } .world-flag.japan:after { width:48px; height:48px; top:14px; left:34px; } .world-sign { font-size:20px; padding:8px 16px; } .world-route { gap:4px; } .world-route span { font-size:11px; padding:5px; } .world-quiz h2 { font-size:22px; } .world-choice { font-size:16px; padding:9px; } .world-feedback { flex-direction:column; align-items:stretch; } .world-complete { min-height:400px; } .world-complete h2 { font-size:26px; } .world-guide { display:none; } }

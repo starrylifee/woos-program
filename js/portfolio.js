@@ -10,7 +10,7 @@ const SITE = {
   name: '해산물과 소고기의 게임 공방',
   short: '게임 공방',
   url: 'https://woos-program.vercel.app',
-  season: '2026년 9월 · 곱셈',
+  season: '2026년 9월 · 곱셈과 세계 지리',
   openedAt: '2026-09-06'
 };
 

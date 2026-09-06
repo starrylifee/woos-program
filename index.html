@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>해산물과 소고기의 게임 공방</title>
-<meta name="description" content="두 어린이가 종이에 기획한 곱셈 게임을 그대로 웹 게임으로 만들고, 편지·AI 기획 평가·활동지로 이어 가는 게임 작품집.">
+<meta name="description" content="두 어린이가 종이에 기획한 곱셈·세계 지리 게임을 웹 게임으로 만들고, 편지·AI 기획 평가·활동지로 이어 가는 게임 작품집.">
 <meta property="og:title" content="해산물과 소고기의 게임 공방">
-<meta property="og:description" content="곱하기 나무캐기 · 곱셈 방탈출 — 어린이가 기획하고 프로그래머가 만든 게임 작품집">
+<meta property="og:description" content="곱하기 나무캐기 · 곱셈 방탈출 · 세계탐험하기 — 어린이가 기획한 게임 작품집">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="해산물과 소고기의 게임 공방">
 <meta property="og:url" content="https://woos-program.vercel.app/">
@@ -17,6 +17,7 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/games.css">
+<link rel="stylesheet" href="css/world.css">
 </head>
 <body>
 
@@ -32,6 +33,7 @@
       </span>
     </button>
     <div class="topbar-right">
+      <a class="btn ghost" href="history.html">제작 기록</a>
       <button class="btn ghost" id="btn-letter" type="button" hidden>
         <span data-icon-slot aria-hidden="true"></span> 편지
       </button>
@@ -58,7 +60,7 @@
     <div class="dash-head">
       <div>
         <h1>게임 <mark>선택</mark></h1>
-        <p class="dash-key"><kbd>1</kbd> <kbd>2</kbd> 키로 바로 시작</p>
+        <p class="dash-key"><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> 키로 바로 시작</p>
       </div>
       <div class="dash-season" id="dash-season"></div>
     </div>
@@ -160,11 +162,14 @@
 
 <script src="js/portfolio.js"></script>
 <script src="js/review.js"></script>
+<script src="js/world-content.js"></script>
 <script src="js/problems.js"></script>
+<script src="js/world-questions.js"></script>
 <script src="js/core.js"></script>
 <script src="js/art.js"></script>
 <script src="js/games/woodcut.js"></script>
 <script src="js/games/escape.js"></script>
+<script src="js/games/world.js"></script>
 <script src="js/boot.js"></script>
 </body>
 </html>

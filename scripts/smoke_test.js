@@ -7,7 +7,7 @@ const path = require('path');
 const { JSDOM } = require('jsdom');
 
 const ROOT = path.resolve(__dirname, '..');
-const files = ['js/portfolio.js', 'js/review.js', 'js/core.js', 'js/art.js', 'js/games/woodcut.js', 'js/games/escape.js', 'js/boot.js'];
+const files = Array.from(fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8').matchAll(/<script src="([^"]+)"/g), m => m[1]);
 
 const dom = new JSDOM(fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8'),
   { runScripts: 'outside-only', pretendToBeVisual: true, url: 'http://localhost/' });
@@ -34,9 +34,9 @@ const check = (c, m) => (c ? ok : bad).push(m);
 (async () => {
   /* ── 홈 ── */
   check($$('.stu').length === 2, '학생 카드 2명');
-  check($$('.gcard').length === 2, '작품 카드 2개');
+  check($$('.gcard').length === 3, '작품 카드 3개');
   check($('#view-dashboard').hidden === false, '홈 표시');
-  check($$('.gcard-actions .btn').length === 6, '작품 카드마다 플레이·편지·기획안 버튼');
+  check($$('.gcard-actions .btn').length === 9, '작품 카드마다 플레이·편지·기획안 버튼');
 
   /* ── 편지 모달 (홈에서) ── */
   wrap(() => window.openLetter('sogogi'));
@@ -180,7 +180,7 @@ const check = (c, m) => (c ? ok : bad).push(m);
 
   /* ── 기획안 모달 ── */
   wrap(() => window.openSheet());
-  check($$('#sheet-scroll img').length === 8, '홈에서 기획안 전체 8장');
+  check($$('#sheet-scroll img').length === 12, '홈에서 기획안 전체 12장');
   wrap(() => window.closeModal('sheet-modal'));
 
   /* ═══ 자동 플레이 통계 (평가서 실측치) ═══ */

@@ -1,0 +1,6 @@
+﻿.git
+.vercel
+_workspace
+node_modules
+scripts
+*.log

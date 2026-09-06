@@ -8,7 +8,7 @@ const CHROME = 'C:/Program Files/Google/Chrome/Application/chrome.exe';
 const BASE = process.env.BASE || 'http://127.0.0.1:8777';
 const OUT = process.env.SHOT_DIR || path.resolve(__dirname, '_shots');
 require('fs').mkdirSync(OUT, { recursive: true });
-const GAME_COUNT = 2;
+const GAME_COUNT = 3;
 const ok = [], bad = [], errs = [];
 const check = (c, m) => (c ? ok : bad).push(m);
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -24,7 +24,7 @@ const shot = (page, name) => page.screenshot({ path: path.join(OUT, name + '.png
 
   await page.goto(BASE + '/index.html', { waitUntil: 'networkidle0' });
   check((await page.$$('.stu')).length === 2, '홈 학생 카드 2');
-  check((await page.$$('.gcard')).length === GAME_COUNT, '홈 작품 카드 2');
+  check((await page.$$('.gcard')).length === GAME_COUNT, '홈 작품 카드 3');
   check(await page.$eval('body', (b) => b.scrollHeight <= b.clientHeight + 2), '홈 세로 스크롤 없음');
   await shot(page, 'home');
 

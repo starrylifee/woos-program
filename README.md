@@ -12,6 +12,7 @@
 | --- | --- | --- | --- | --- |
 | 01 | 곱하기 나무캐기 | 소고기 (1학년) | 곱셈구구 | ○3 △1 ✕2 |
 | 02 | 곱셈 방탈출 | 해산물 (3학년) | (두 자리) × (두 자리) | ○3 △2 ✕1 |
+| 03 | 세계탐험하기 | 해산물 (3학년) | 초3 세계 지리 | ○2 △4 ✕0 |
 
 ## 이 사이트가 하는 일
 
@@ -106,3 +107,20 @@ NODE_PATH=<puppeteer-core 설치 폴더>/node_modules node scripts/browser_check
 
 ---
 디자인 : 홈 = 학생 2열 작품집, 게임 = L2 무대 집중 × **T7 크레용 스케치북** (미색 도화지 + 해산물 청록 `#1d7f8f` / 소고기 벽돌빨강 `#b8452b`)
+
+
+## 세계탐험하기 추가 (2026-09-06)
+
+- 사용자 확인: 전 레벨 초3 눈높이, 대륙마다 2문제를 모두 맞히면 이동.
+- 아시아 → 유럽 → 아프리카 → 북아메리카 → 오세아니아, 레벨당 10문제, 총 5레벨.
+- 40문항. 레벨 1 나라·국기 / 2 명소·자연 / 3 수도 / 4 연결 / 5 앞 문항 무작위 복습.
+- 오답 설명 확인 뒤 현재 레벨 처음부터 재시작. 완료한 레벨은 기기에 저장.
+- 원본 사진 4장: `source_images/world/`. 분석과 근거: `docs/world-questions.md`.
+- 규칙 `js/games/world.js`, 문항 `js/world-questions.js`, 작품·편지·평가·활동지 `js/world-content.js`.
+- 모달/인쇄 공용 지리 평가 기준. 평가서 6쪽, 활동지 4쪽.
+- 기존 L2 무대 집중 / T7 크레용 스케치북 유지. 팻말·국기를 HTML/CSS로 재현.
+- 기존 곱셈 게임의 난이도 4단계는 `js/problems.js`, 세계탐험의 잠금 레벨은 별도로 관리.
+- 로컬 검증 도구 설치: `npm install --prefix _workspace/qa jsdom puppeteer-core`
+- PowerShell 검증: `$env:NODE_PATH = "$PWD/_workspace/qa/node_modules"` 후
+  `node scripts/smoke_test.js`, `node scripts/world_test.js`.
+  `python -m http.server 8777` 실행 상태에서 `node scripts/browser_check.js`, `node scripts/world_browser_check.js`.
