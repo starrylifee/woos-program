@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>해산물과 소고기의 게임 공방</title>
+<meta name="description" content="두 어린이가 종이에 기획한 곱셈 게임을 그대로 웹 게임으로 만들고, 편지·AI 기획 평가·활동지로 이어 가는 게임 작품집.">
+<meta property="og:title" content="해산물과 소고기의 게임 공방">
+<meta property="og:description" content="곱하기 나무캐기 · 곱셈 방탈출 — 어린이가 기획하고 프로그래머가 만든 게임 작품집">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="해산물과 소고기의 게임 공방">
+<meta property="og:url" content="https://woos-program.vercel.app/">
+<meta property="og:image" content="https://woos-program.vercel.app/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/games.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ── 상단바 ───────────────────────────────────── -->
+  <header class="topbar">
+    <button class="brand" id="brand-btn" type="button">
+      <span class="brand-mark" aria-hidden="true">×</span>
+      <span class="brand-text">
+        <b>해산물과 소고기의 게임 공방</b>
+        <small>어린이가 기획하고 프로그래머가 만든 게임 작품집</small>
+      </span>
+    </button>
+    <div class="topbar-right">
+      <button class="btn ghost" id="btn-letter" type="button" hidden>
+        <span data-icon-slot aria-hidden="true"></span> 편지
+      </button>
+      <button class="btn ghost" id="btn-review" type="button" hidden>
+        <span data-icon-slot aria-hidden="true"></span> 기획 평가
+      </button>
+      <button class="btn ghost" id="btn-sheet" type="button">
+        <span data-icon-slot aria-hidden="true"></span> <span id="btn-sheet-label">기획안 전체</span>
+      </button>
+      <a class="btn ghost" id="btn-worksheet" href="worksheet.html" target="_blank" rel="noopener">
+        <span data-icon-slot aria-hidden="true"></span> 활동지
+      </a>
+      <button class="btn ghost" id="btn-sound" type="button" aria-pressed="true">
+        <span data-icon-slot aria-hidden="true"></span> 소리
+      </button>
+      <button class="btn" id="btn-home" type="button" hidden>
+        <span data-icon-slot aria-hidden="true"></span> 처음으로
+      </button>
+    </div>
+  </header>
+
+  <!-- ── 홈 : 학생 2명의 작품집 ───────────────────── -->
+  <main id="view-dashboard" class="view">
+    <div class="dash-head">
+      <div>
+        <h1>종이에 그린 게임이 <mark>진짜 게임</mark>이 되었습니다</h1>
+        <p>기획서에 적힌 규칙과 숫자를 <b>그대로</b> 옮겼습니다. 플레이해 보고, 편지를 읽고,
+           바꾸고 싶은 숫자를 활동지에 적으면 그 값으로 다음 판을 만듭니다.
+           <span class="dash-key">키보드 <kbd>1</kbd> <kbd>2</kbd>로 바로 열립니다.</span></p>
+      </div>
+      <div class="dash-season" id="dash-season"></div>
+    </div>
+    <div class="students" id="students"></div>
+    <footer class="dash-foot">
+      <span id="dash-foot-text"></span>
+      <span class="dot"></span>
+      <span>기획 : 해산물 (3학년) · 소고기 (1학년)</span>
+    </footer>
+  </main>
+
+  <!-- ── 게임 화면 (L2 무대 집중) ──────────────────── -->
+  <section id="view-game" class="view" hidden>
+    <div class="game-head">
+      <div class="gh-left">
+        <span class="gh-num" id="gh-num">01</span>
+        <div>
+          <h2 id="gh-title">게임 제목</h2>
+          <p class="gh-meta">
+            <span id="gh-student">기획 : —</span>
+            <span class="dot"></span>
+            <span id="gh-concept">개념</span>
+            <span class="dot"></span>
+            <span class="gh-vers" id="gh-versions"></span>
+            <span class="gh-vlabel" id="gh-vlabel"></span>
+          </p>
+        </div>
+      </div>
+      <div class="gh-review">
+        <span class="gh-review-tag">AI 한줄평</span>
+        <p id="gh-review-text">—</p>
+      </div>
+    </div>
+
+    <div class="game-body">
+      <div class="pause-badge" id="pause-badge" hidden>⏸ 일시정지 — 창을 닫으면 이어서 합니다</div>
+      <div class="stat-strip" id="stat-panel"></div>
+      <div class="stage" id="scene"></div>
+      <div class="dock" id="interactive-controls-container"></div>
+    </div>
+  </section>
+
+  <!-- ── 결과 오버레이 ────────────────────────────── -->
+  <div class="overlay" id="overlay" hidden>
+    <div class="overlay-card" role="dialog" aria-modal="true">
+      <div class="ov-icon" id="ov-icon"></div>
+      <h3 id="ov-title">성공!</h3>
+      <p id="ov-desc"></p>
+      <div class="ov-actions">
+        <button class="btn primary" id="ov-btn" type="button">다시 하기</button>
+        <button class="btn ghost" id="ov-home" type="button">그만하기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 편지 ─────────────────────────────────────── -->
+  <div class="modal" id="letter-modal" hidden>
+    <div class="modal-card letter" role="dialog" aria-modal="true" aria-label="편지">
+      <div class="modal-head">
+        <h3 id="letter-title">편지</h3>
+        <div class="modal-head-actions">
+          <span class="vtabs" id="letter-tabs"></span>
+          <button class="icon-btn" id="letter-close" type="button" aria-label="닫기">✕</button>
+        </div>
+      </div>
+      <div class="letter-scroll" id="letter-body"></div>
+    </div>
+  </div>
+
+  <!-- ── 기획안 뷰어 ──────────────────────────────── -->
+  <div class="modal" id="sheet-modal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-label="학생 기획안">
+      <div class="modal-head">
+        <h3 id="sheet-title">학생 기획안</h3>
+        <button class="icon-btn" id="sheet-close" type="button" aria-label="닫기">✕</button>
+      </div>
+      <div class="sheet-scroll" id="sheet-scroll"></div>
+    </div>
+  </div>
+
+  <!-- ── AI 기획 평가서 ───────────────────────────── -->
+  <div class="modal" id="review-modal" hidden>
+    <div class="modal-card wide" role="dialog" aria-modal="true" aria-label="AI 기획 평가서">
+      <div class="modal-head">
+        <h3 id="review-title">AI 기획 평가서</h3>
+        <div class="modal-head-actions">
+          <a class="btn ghost" id="review-print" href="review.html" target="_blank" rel="noopener">
+            <span data-icon-slot aria-hidden="true"></span> 인쇄본
+          </a>
+          <button class="icon-btn" id="review-close" type="button" aria-label="닫기">✕</button>
+        </div>
+      </div>
+      <div class="rv-scroll" id="review-scroll"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="js/portfolio.js"></script>
+<script src="js/review.js"></script>
+<script src="js/core.js"></script>
+<script src="js/games/woodcut.js"></script>
+<script src="js/games/escape.js"></script>
+<script src="js/boot.js"></script>
+</body>
+</html>

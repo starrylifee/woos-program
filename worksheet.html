@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>게임 디버깅 활동지 — 해산물과 소고기의 게임 공방</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+  @page { size: A4 portrait; margin: 10mm 13mm; }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: #6b7078; color: #14171c;
+    font-family: "Pretendard Variable", Pretendard, -apple-system, "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+    font-size: 11pt; line-height: 1.55;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  h1, h2, h3, p { margin: 0; }
+  .bar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 20px; background: #14171c; color: #f2f4f7; font-size: 13px; }
+  .bar a, .bar button { font: inherit; font-weight: 600; padding: 8px 15px; border-radius: 9px; border: 1px solid rgba(255,255,255,.22); background: transparent; color: #f2f4f7; cursor: pointer; text-decoration: none; margin-left: 6px; }
+  .bar button.p { background: #f2f4f7; color: #14171c; border-color: transparent; }
+  .bar .t { font-weight: 700; } .bar .d { color: #9aa1ab; font-weight: 400; }
+
+  .sheet { width: 210mm; min-height: 297mm; margin: 18px auto; padding: 12mm 14mm; background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,.28); }
+  .head { display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; padding-bottom: 9px; border-bottom: 2.5px solid #14171c; }
+  .head h1 { font-size: 17pt; font-weight: 800; letter-spacing: -.02em; }
+  .head .sub { margin-top: 3px; font-size: 9.5pt; color: #565d67; }
+  .idbox { display: flex; gap: 6px; font-size: 9pt; color: #565d67; white-space: nowrap; }
+  .idbox span { border-bottom: 1px solid #a9b0b9; padding: 0 6px 2px; min-width: 46px; display: inline-block; }
+
+  .gtitle { display: flex; align-items: center; gap: 10px; margin: 12px 0 2px; }
+  .gnum { font-size: 8.5pt; font-weight: 800; letter-spacing: .06em; padding: 4px 8px; border-radius: 6px; color: #fff; }
+  .gtitle h2 { font-size: 15pt; font-weight: 800; letter-spacing: -.02em; }
+  .gtitle .who { margin-left: auto; font-size: 9.5pt; color: #565d67; }
+
+  .rule { margin-top: 6px; padding: 8px 12px; border: 1px solid #d3d8de; border-radius: 8px; background: #f7f8fa; font-size: 9.5pt; line-height: 1.62; }
+  .rule .rt { display: block; font-size: 8pt; font-weight: 800; letter-spacing: .08em; color: #7a828c; margin-bottom: 4px; }
+  .ai { margin-top: 8px; padding: 8px 12px; border: 1.5px solid #14171c; border-radius: 8px; font-size: 10pt; line-height: 1.6; }
+  .ai .at { display: block; font-size: 8pt; font-weight: 800; letter-spacing: .08em; margin-bottom: 4px; }
+
+  .q { margin-top: 8px; }
+  .q h3 { font-size: 10.5pt; font-weight: 750; margin-bottom: 6px; }
+  .q h3 .n { display: inline-block; width: 17px; height: 17px; border-radius: 50%; background: #14171c; color: #fff; font-size: 8.5pt; text-align: center; line-height: 17px; margin-right: 6px; vertical-align: 1px; }
+  .q .note { margin: -2px 0 6px; font-size: 8.5pt; color: #7a828c; }
+  .lines { border: 1px solid #d3d8de; border-radius: 8px; }
+  .lines div { height: 6.5mm; border-bottom: 1px dashed #dfe3e8; }
+  .lines div:last-child { border-bottom: 0; }
+  .box { border: 1px solid #d3d8de; border-radius: 8px; min-height: 34mm; }
+  table { width: 100%; border-collapse: collapse; font-size: 9.5pt; }
+  th, td { border: 1px solid #ccd2d9; padding: 5px 7px; text-align: left; vertical-align: middle; }
+  th { background: #eef1f4; font-weight: 700; font-size: 8.5pt; color: #3c434c; }
+  td.blank { height: 8mm; }
+  td.mono { font-family: Consolas, monospace; font-size: 9pt; color: #565d67; }
+  .result { display: flex; gap: 10px; margin-top: 9px; font-size: 9.5pt; }
+  .result .cell { flex: 1; border: 1px solid #ccd2d9; border-radius: 8px; padding: 6px 10px; }
+  .result .cell b { display: block; font-size: 8.5pt; color: #7a828c; font-weight: 700; margin-bottom: 5px; }
+  .result .cell .fill { height: 5.5mm; border-bottom: 1px dashed #cdd3da; }
+  .pick { display: flex; gap: 12px; font-size: 10pt; padding-top: 2px; flex-wrap: wrap; }
+  .pick label { display: inline-flex; align-items: center; gap: 5px; }
+  .pick i { width: 12px; height: 12px; border: 1.4px solid #14171c; border-radius: 3px; display: inline-block; }
+  .foot { margin-top: 14px; padding-top: 8px; border-top: 1px solid #d3d8de; font-size: 8.5pt; color: #868d96; display: flex; justify-content: space-between; }
+
+  /* 1학년용 — 글씨 크게, 칸 크게 */
+  .sheet.g1 { font-size: 12pt; }
+  .sheet.g1 .q h3 { font-size: 13pt; }
+  .sheet.g1 .q h3 .n { width: 21px; height: 21px; line-height: 21px; font-size: 10pt; }
+  .sheet.g1 .rule { font-size: 11pt; line-height: 1.6; }
+  .sheet.g1 .result .cell { padding: 7px 12px; font-size: 12pt; }
+  .sheet.g1 .result .cell b { font-size: 10.5pt; }
+  .sheet.g1 .result .cell .fill { height: 7mm; }
+  .sheet.g1 .pick { font-size: 13pt; gap: 16px; }
+  .sheet.g1 .pick i { width: 16px; height: 16px; }
+  .sheet.g1 table { font-size: 11pt; }
+  .sheet.g1 th, .sheet.g1 td { padding: 3px 7px; }
+  .sheet.g1 th { font-size: 10pt; }
+  .sheet.g1 td.blank { height: 7.5mm; }
+  .sheet.g1 td.mono { font-size: 10.5pt; }
+  .sheet.g1 .box { min-height: 12mm; }
+  .sheet.g1 .lines div { height: 8mm; }
+
+  @media print {
+    body { background: #fff; } .bar { display: none; }
+    .sheet { width: auto; min-height: 0; margin: 0; padding: 0; box-shadow: none; page-break-after: always; }
+    .sheet:last-child { page-break-after: auto; }
+    .owner, table, .result { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <span><span class="t">게임 디버깅 활동지</span> <span class="d">· 3장 (안내 1 + 게임별 1)</span></span>
+  <span>
+    <a href="index.html">← 게임으로</a>
+    <a href="review.html">AI 기획 평가서</a>
+    <button class="p" type="button" onclick="window.print()">인쇄 / PDF 저장</button>
+  </span>
+</div>
+
+<!-- 1쪽 안내 -->
+<section class="sheet">
+  <div class="head">
+    <div><h1>게임 디버깅 활동지 — 안내</h1><div class="sub">해산물과 소고기의 게임 공방 · 2026년 9월 · 곱셈</div></div>
+    <div class="idbox">이름<span style="min-width:80px">&nbsp;</span></div>
+  </div>
+
+  <div class="q">
+    <h3><span class="n">1</span>오늘 하는 일</h3>
+    <div class="rule">
+      종이에 그린 기획서를 <b>적힌 숫자와 규칙 그대로</b> 게임으로 만들었습니다.
+      그래서 어떤 곳은 기획한 사람 마음과 다를 수 있고, 어떤 숫자는 기획서에 없어서 프로그래머가 대신 정했습니다.
+      <br><br>
+      게임 안에는 숫자를 바꾸는 기능이 없습니다. 그 게임의 숫자를 정하는 사람은
+      <b>그 게임을 기획한 사람</b>이기 때문입니다. 이 종이에 적은 값으로 게임을 고쳐서 <b>다음 판(v2)</b>을 만듭니다.
+    </div>
+  </div>
+
+  <div class="q">
+    <h3><span class="n">2</span>하는 방법</h3>
+    <table>
+      <tr><th style="width:12%">순서</th><th>할 일</th></tr>
+      <tr><td class="mono">1</td><td>사이트에서 내 게임을 끝까지 한 번 해 봅니다. (형·동생 게임도 해 보면 좋아요)</td></tr>
+      <tr><td class="mono">2</td><td>화면 위 <b>편지</b> 버튼을 눌러 편지를 읽습니다.</td></tr>
+      <tr><td class="mono">3</td><td>활동지 ①에 해 본 결과를 적습니다. 숫자를 세어 두면 좋습니다.</td></tr>
+      <tr><td class="mono">4</td><td>AI 한줄평과 기획 평가를 읽고, 내가 찾은 문제를 적습니다.</td></tr>
+      <tr><td class="mono">5</td><td>숫자 표에 <b>내가 정한 값</b>을 적습니다. 바꾸지 않을 것은 "그대로"라고 씁니다.</td></tr>
+    </table>
+    <p class="note" style="margin-top:7px">숫자는 기획한 사람이 정합니다. 다른 사람 게임은 "고치고 싶은 것"까지만 적어 주세요.</p>
+  </div>
+
+  <div class="q">
+    <h3><span class="n">3</span>좋은 게임 숫자의 기준</h3>
+    <table>
+      <tr><th style="width:30%">기준</th><th>뜻</th></tr>
+      <tr><td>끝낼 수 있는가</td><td>한 번 앉은 자리에서 끝까지 갈 수 있어야 합니다.</td></tr>
+      <tr><td>너무 쉽지 않은가</td><td>한 번에 바로 끝나면 재미가 없습니다.</td></tr>
+      <tr><td>고민할 거리가 있는가</td><td>무엇을 먼저 살지, 어느 문으로 갈지 정할 게 있어야 합니다.</td></tr>
+      <tr><td>틀리면 무슨 일이 생기는가</td><td>틀렸을 때 왜 그렇게 됐는지 알 수 있어야 합니다.</td></tr>
+    </table>
+  </div>
+
+  <div class="q">
+    <h3><span class="n">4</span>낱말 확인</h3>
+    <table>
+      <tr><th style="width:30%">낱말</th><th>뜻을 내 말로 적어 보세요</th></tr>
+      <tr><td>기획</td><td class="blank"></td></tr>
+      <tr><td>디버깅</td><td class="blank"></td></tr>
+      <tr><td>v2 (버전 2)</td><td class="blank"></td></tr>
+    </table>
+  </div>
+
+  <div class="foot"><span>해산물과 소고기의 게임 공방</span><span>1 / 3</span></div>
+</section>
+
+<!-- 2쪽 소고기 (1학년) -->
+<section class="sheet g1">
+  <div class="head">
+    <div><h1>게임 디버깅 활동지</h1><div class="sub">1학년 · 곱셈구구</div></div>
+    <div class="idbox">이름<span style="min-width:80px">&nbsp;</span></div>
+  </div>
+  <div class="gtitle">
+    <span class="gnum" style="background:#9a3a24">GAME 01</span>
+    <h2>곱하기 나무캐기</h2>
+    <span class="who">기획 : 소고기</span>
+  </div>
+  <div class="rule">
+    <span class="rt">기획서에 적힌 규칙</span>
+    · 나무 위에 곱하기가 있어요. 맞히면 나무를 캐고 50원을 받아요.<br>
+    · 상점 : 도끼 100원, 톱 200원, 쌍톱 600원, 은톱 720원, 금톱 800원. 같은 것을 2개까지.<br>
+    · 돈 버튼과 종료 버튼이 있어요.
+  </div>
+
+  <div class="q">
+    <h3><span class="n">1</span>게임을 해 봤어요</h3>
+    <div class="result">
+      <div class="cell"><b>나무를 몇 그루 캤나요?</b><div class="fill"></div></div>
+      <div class="cell"><b>도구를 몇 개 샀나요?</b><div class="fill"></div></div>
+      <div class="cell"><b>도구 5개를 다 모았나요?</b>
+        <div class="pick"><label><i></i>네</label><label><i></i>아니요</label></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ai" style="border-color:#9a3a24">
+    <span class="at" style="color:#9a3a24">프로그래머가 정한 것</span>
+    도구를 사면 나무 하나에 <b>도구 값의 절반</b>만큼 더 받아요. 도구 5개를 다 모으면 <b>성공</b>이에요.<br>
+    이건 기획서에 없어서 프로그래머가 정했어요. 소고기가 다시 정할 수 있어요.
+  </div>
+
+  <div class="q">
+    <h3><span class="n">2</span>제일 재미있었던 것 (글이나 그림)</h3>
+    <div class="box"></div>
+  </div>
+
+  <div class="q">
+    <h3><span class="n">3</span>고치고 싶은 것</h3>
+    <div class="lines"><div></div><div></div></div>
+  </div>
+
+  <div class="q">
+    <h3><span class="n">4</span>숫자를 정해요</h3>
+    <p class="note">안 바꿀 것은 <b>그대로</b>라고 쓰세요. 여기 적은 숫자로 다음 게임을 만들어요.</p>
+    <table>
+      <tr><th style="width:44%">무엇</th><th style="width:24%">지금</th><th>내가 정한 것</th></tr>
+      <tr><td>나무 하나에 받는 돈</td><td class="mono">50원</td><td class="blank"></td></tr>
+      <tr><td>도끼 값</td><td class="mono">100원</td><td class="blank"></td></tr>
+      <tr><td>톱 값</td><td class="mono">200원</td><td class="blank"></td></tr>
+      <tr><td>쌍톱 값</td><td class="mono">600원</td><td class="blank"></td></tr>
+      <tr><td>은톱 값</td><td class="mono">720원</td><td class="blank"></td></tr>
+      <tr><td>금톱 값</td><td class="mono">800원</td><td class="blank"></td></tr>
+      <tr><td>도구를 사면 좋아지는 것</td><td class="mono">값의 절반만큼 더 벌기</td><td class="blank"></td></tr>
+      <tr><td>틀리면?</td><td class="mono">아무 일 없음</td><td class="blank"></td></tr>
+      <tr><td>언제 성공?</td><td class="mono">도구 5개 다 모으기</td><td class="blank"></td></tr>
+    </table>
+  </div>
+
+  <div class="foot"><span>해산물과 소고기의 게임 공방 · v1 → v2</span><span>2 / 3</span></div>
+</section>
+
+<!-- 3쪽 해산물 (3학년) -->
+<section class="sheet">
+  <div class="head">
+    <div><h1>게임 디버깅 활동지</h1><div class="sub">3학년 · (두 자리) × (두 자리)</div></div>
+    <div class="idbox">이름<span style="min-width:80px">&nbsp;</span></div>
+  </div>
+  <div class="gtitle">
+    <span class="gnum" style="background:#186a78">GAME 02</span>
+    <h2>곱셈 방탈출</h2>
+    <span class="who">기획 : 해산물</span>
+  </div>
+  <div class="rule">
+    <span class="rt">기획서에 적힌 규칙</span>
+    · 방 5개를 탈출한다. 방마다 곱셈 문제가 1개씩 있다.<br>
+    · 문이 2개. 하나는 정답, 하나는 오답. 오답 문으로 들어가면 처음부터 시작한다.<br>
+    · 5개 방을 모두 끝내면 게임이 끝난다. 손으로 아바타를 움직인다.
+  </div>
+
+  <div class="q">
+    <h3><span class="n">1</span>기획서 그대로 해 본 결과</h3>
+    <div class="result">
+      <div class="cell"><b>탈출했나요?</b>
+        <div class="pick"><label><i></i>성공</label><label><i></i>포기</label></div>
+      </div>
+      <div class="cell"><b>처음으로 몇 번 돌아갔나요?</b><div class="fill"></div></div>
+      <div class="cell"><b>걸린 시간</b><div class="fill"></div></div>
+    </div>
+  </div>
+
+  <div class="ai" style="border-color:#186a78">
+    <span class="at" style="color:#186a78">AI 한줄평</span>
+    4번 방에서 틀리면 <b>두 자리 곱셈 4문제</b>를 다시 풀어야 해요. 테스트에서 처음으로 돌아간 횟수만큼 걸리는 시간이 크게 늘었습니다. 오답 문으로 들어갔을 때 벌칙을 어떻게 정할지 다시 생각해 볼까요?
+  </div>
+
+  <div class="q">
+    <h3><span class="n">2</span>내가 찾은 문제는 무엇인가요?</h3>
+    <div class="lines"><div></div><div></div></div>
+  </div>
+
+  <div class="q">
+    <h3><span class="n">3</span>이 게임의 숫자와 규칙을 정해 주세요</h3>
+    <p class="note">바꾸지 않을 항목은 <b>그대로</b>라고 적으세요. 여기 적은 값으로 게임을 고칩니다.</p>
+    <table>
+      <tr><th style="width:30%">항목</th><th style="width:22%">지금 값</th><th style="width:20%">내가 정한 값</th><th>왜 그렇게 정했나요?</th></tr>
+      <tr><td>방 개수</td><td class="mono">5개</td><td class="blank"></td><td></td></tr>
+      <tr><td>문제 크기</td><td class="mono">두 자리 × 두 자리</td><td class="blank"></td><td></td></tr>
+      <tr><td>오답 문 숫자와 정답의 차이</td><td class="mono">1 ~ 9</td><td class="blank"></td><td></td></tr>
+      <tr><td>오답 문으로 들어가면</td><td class="mono">처음부터</td><td class="blank"></td><td></td></tr>
+      <tr><td>제한 시간</td><td class="mono">없음</td><td class="blank"></td><td></td></tr>
+      <tr><td>연습장</td><td class="mono">있음</td><td class="blank"></td><td></td></tr>
+      <tr><td class="blank"></td><td></td><td></td><td></td></tr>
+    </table>
+  </div>
+
+  <div class="q">
+    <h3><span class="n">4</span>그렇게 정하면 어떻게 될지 예상해 보세요</h3>
+    <div class="result">
+      <div class="cell"><b>한 판에 몇 분쯤 걸릴까요?</b><div class="fill"></div></div>
+      <div class="cell"><b>몇 번까지 틀려도 괜찮을까요?</b><div class="fill"></div></div>
+      <div class="cell"><b>동생도 할 수 있을까요?</b>
+        <div class="pick"><label><i></i>할 수 있다</label><label><i></i>어렵다</label></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <h3><span class="n">5</span>숫자 말고 규칙을 하나 더 넣는다면?</h3>
+    <div class="lines"><div></div><div></div></div>
+  </div>
+
+  <div class="foot"><span>해산물과 소고기의 게임 공방 · v1 → v2</span><span>3 / 3</span></div>
+</section>
+
+</body>
+</html>
