@@ -113,7 +113,7 @@ mark { background: linear-gradient(transparent 45%, rgba(29,127,143,.22) 45%, rg
 .view { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
 
 /* ── 홈 : 학생 2열 ──────────────────────────────── */
-#view-dashboard { padding: 22px 32px 14px; gap: 18px; }
+#view-dashboard { padding: 22px 32px 14px; gap: 18px; overflow-y: auto; overscroll-behavior: contain; }
 .dash-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
 .dash-head h1 { font-size: 30px; font-weight: 800; letter-spacing: -.025em; }
 .dash-head p  { margin-top: 8px; font-size: 15.5px; color: var(--text-2); max-width: 78ch; line-height: 1.6; }
@@ -122,9 +122,9 @@ mark { background: linear-gradient(transparent 45%, rgba(29,127,143,.22) 45%, rg
 .dash-key kbd { font-family: var(--mono); font-size: 12px; font-weight: 700; padding: 1px 6px; border: 1px solid var(--line-2); border-bottom-width: 2px; border-radius: 5px; background: var(--surface); color: var(--text); }
 .dash-season { flex: 0 0 auto; font-size: 13px; font-weight: 700; color: var(--text-3); padding: 8px 14px; border: 1px solid var(--line-2); border-radius: 999px; background: var(--surface); }
 
-.students { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.students { flex: 1 1 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
 .stu {
-  min-height: 0; display: flex; flex-direction: column; gap: 12px;
+  display: flex; flex-direction: column; gap: 12px;
   padding: 18px 20px 16px;
   border-radius: var(--r-lg); border: 1px solid var(--line-2);
   background: var(--surface); box-shadow: var(--shadow);
@@ -142,15 +142,15 @@ mark { background: linear-gradient(transparent 45%, rgba(29,127,143,.22) 45%, rg
 .stu-meta { margin-left: auto; display: flex; gap: 14px; font-size: 13px; color: var(--text-3); }
 .stu-meta b { color: var(--text); font-size: 16px; margin-left: 3px; }
 .stu-intro { font-size: 14px; color: var(--text-2); line-height: 1.6; padding-bottom: 10px; border-bottom: 1px dashed var(--line-2); }
-.work-list { flex: 1 1 auto; min-height: 0; display: grid; gap: 12px; align-content: stretch; }
+.work-list { flex: 1 1 auto; display: grid; gap: 12px; align-content: stretch; }
 
 .gcard {
-  display: flex; flex-direction: column; min-height: 0;
+  display: flex; flex-direction: column;
   padding: 0 18px 14px;
   border-radius: var(--r); border: 1px solid var(--line-2);
   background: var(--surface-2); overflow: hidden;
 }
-.gcard-cover { position: relative; flex: 1 1 auto; min-height: 120px; margin: 0 -18px 12px; overflow: hidden; border-bottom: 1px solid var(--line-2); background: var(--surface-3); }
+.gcard-cover { position: relative; flex: 1 1 120px; min-height: 120px; max-height: 340px; margin: 0 -18px 12px; overflow: hidden; border-bottom: 1px solid var(--line-2); background: var(--surface-3); }
 .gcard-cover svg { display: block; }
 .cover-woodcut .cv-sky { position: absolute; inset: 0; background: linear-gradient(#dcefff, #f3f9ff 72%); }
 .cover-woodcut .cv-ground { position: absolute; left: 0; right: 0; bottom: 0; height: 22%; background: linear-gradient(#8fd08a, #6fb96d); border-top: 3px solid #5aa257; }
@@ -220,8 +220,8 @@ mark { background: linear-gradient(transparent 45%, rgba(29,127,143,.22) 45%, rg
 
 /* ── 게임 본문 L2 ───────────────────────────────── */
 .game-body {
-  flex: 1 1 auto; min-height: 0;
-  display: grid; grid-template-rows: auto minmax(0,1fr) auto;
+  flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  display: grid; grid-template-rows: auto minmax(240px,1fr) auto;
   gap: 12px; padding: 12px 26px 14px;
 }
 .stat-strip {
@@ -405,4 +405,90 @@ mark { background: linear-gradient(transparent 45%, rgba(29,127,143,.22) 45%, rg
   .gh-review { display: none; }
   .game-body { padding: 10px 14px 12px; gap: 10px; }
   .students { gap: 14px; }
+}
+
+
+/* ── 반응형 ─────────────────────────────────────── */
+/* 노트북·설치형 창처럼 높이가 낮은 화면: 위 규칙(overflow-y:auto)으로 스크롤이 생김. 여백만 줄인다. */
+@media (max-height: 700px) {
+  .topbar { height: 56px; }
+  #view-dashboard { padding: 14px 24px 12px; gap: 12px; }
+  .dash-head h1 { font-size: 26px; }
+  .dash-head p { margin-top: 4px; font-size: 14px; }
+  .stu { padding: 14px 16px 14px; gap: 10px; }
+  .gcard-cover { min-height: 100px; }
+  .game-body { gap: 10px; padding: 10px 20px 12px; }
+}
+
+/* 태블릿·좁은 창 */
+@media (max-width: 1024px) {
+  .topbar { padding: 0 16px; }
+  .topbar-right .btn { padding: 0 11px; font-size: 13.5px; }
+  #view-dashboard { padding: 16px 18px 12px; }
+  .students { gap: 14px; }
+  .game-head { padding: 10px 16px; }
+  .gh-review { max-width: 46%; }
+  .game-body { padding: 10px 14px 12px; }
+}
+
+/* 핸드폰 */
+@media (max-width: 720px) {
+  .topbar { height: auto; min-height: 52px; padding: 8px 12px; gap: 8px; flex-wrap: wrap; }
+  .brand-mark { width: 30px; height: 30px; font-size: 18px; }
+  .brand-text b { font-size: 14px; }
+  .brand-text small { display: none; }
+  .topbar-right { gap: 5px; flex-wrap: wrap; justify-content: flex-end; }
+  .topbar-right .btn { height: 34px; padding: 0 9px; font-size: 12.5px; gap: 5px; }
+  #btn-worksheet { display: none; }              /* 인쇄용 활동지는 폰에서 숨김 */
+
+  #view-dashboard { padding: 14px 12px 12px; gap: 12px; }
+  .dash-head { flex-direction: column; gap: 8px; }
+  .dash-head h1 { font-size: 24px; }
+  .dash-head p { font-size: 14px; }
+  .dash-key { display: none; }                  /* 키보드 안내는 폰에서 의미 없음 */
+  .dash-season { align-self: flex-start; }
+  .students { grid-template-columns: 1fr; gap: 14px; }
+  .stu { padding: 14px 14px 12px; gap: 10px; }
+  .stu-head { flex-wrap: wrap; gap: 10px; }
+  .stu-avatar { width: 44px; height: 44px; font-size: 20px; }
+  .stu-name h2 { font-size: 20px; }
+  .stu-meta { margin-left: auto; gap: 10px; }
+  .gcard { padding: 0 14px 12px; }
+  .gcard-cover { flex: 0 0 auto; height: 150px; min-height: 0; margin: 0 -14px 10px; }
+  .gcard h3 { font-size: 19px; }
+  .gcard-desc { font-size: 13.5px; }
+  .gcard-actions .btn { height: 40px; font-size: 14px; flex: 1 1 auto; justify-content: center; }
+  .dash-foot { font-size: 12px; }
+
+  .game-head { flex-direction: column; gap: 10px; padding: 10px 12px; }
+  .gh-left { gap: 10px; }
+  .game-head h2 { font-size: 18px; }
+  .gh-meta { font-size: 12px; }
+  .gh-review { max-width: none; padding: 7px 10px; gap: 8px; }
+  .gh-review p { font-size: 13px; }
+  .game-body { padding: 8px 8px 10px; gap: 8px; grid-template-rows: auto minmax(260px,1fr) auto; }
+  .stat-strip { padding: 6px 8px; gap: 6px; min-height: 0; }
+  .stat { padding: 4px 9px; gap: 6px; }
+  .stat-label { font-size: 13px; }
+  .stat-value { font-size: 17px; }
+  .gauge { min-width: 140px; }
+  .stat-strip .hint { display: none; }
+  .dock { gap: 10px; padding: 8px; min-height: 0; }
+  .abtn { min-height: 46px; min-width: 0; padding: 6px 10px; font-size: 14px; flex: 1 1 auto; justify-content: center; }
+  .abtn.key::after { display: none; }          /* 단축키 표시 숨김 */
+  .modal { padding: 10px; }
+  .modal-card { width: 100%; max-height: 94dvh; }
+  .letter-scroll { padding: 12px; }
+  .letter-paper { padding: 20px 18px; font-size: 16px; line-height: 1.75; }
+  .letter-paper h4 { font-size: 19px; }
+  .overlay-card { width: min(520px, 94vw); padding: 24px 18px 20px; }
+  .overlay-card h3 { font-size: 24px; }
+  .ov-actions { flex-wrap: wrap; }
+}
+
+/* 핸드폰 가로: 높이가 아주 낮으므로 게임 화면은 스크롤, 무대 최소 높이 유지 */
+@media (max-width: 1024px) and (max-height: 480px) {
+  .topbar { height: 48px; }
+  .game-head { display: none; }                 /* 제목·한줄평은 홈에서 봤으므로 무대 우선 */
+  .game-body { grid-template-rows: auto minmax(240px,1fr) auto; }
 }

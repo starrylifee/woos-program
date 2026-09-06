@@ -194,3 +194,25 @@
 .esc.has-art .esc-door { background: transparent; border: 0; border-radius: 0; }
 .esc.has-art .esc-door.sel { box-shadow: none; }
 .esc.has-art .esc-door.sel .esc-door-art { filter: drop-shadow(0 0 0 #ffd54a) drop-shadow(0 0 6px #ffd54a); }
+
+/* ── 반응형 : 나무캐기 ── 좁은 화면에서는 상점을 무대 아래로 */
+@media (max-width: 720px) {
+  .wc { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) 44%; }
+  .wc-shop { border-left: 0; border-top: 1px solid var(--line-2); padding: 8px 10px; gap: 5px; }
+  .wc-shop-head { font-size: 16px; }
+  .wc-money { padding: 4px 10px; font-size: 13px; }
+  .wc-money b { font-size: 18px; }
+  .wc-item { min-height: 36px; padding: 2px 8px; gap: 8px; }
+  .wc-item-ico { font-size: 18px; }
+  .wc-item-body b { font-size: 13.5px; }
+  .wc-item-right b { font-size: 13.5px; }
+  .wc-quit { height: 34px; font-size: 14px; }
+  .wc-answer { left: 12px; bottom: 12px; gap: 8px; }
+  .wc-ans-label { font-size: 16px; }
+  .wc-ans-box { min-width: 90px; height: 52px; font-size: 30px; padding: 0 12px; }
+  .wc-tools { right: 10px; top: 10px; max-width: 55%; }
+  .wc-tool { padding: 4px 8px; font-size: 12px; }
+  .wc-stump { width: 56px; }
+  .wc-q { font-size: clamp(22px, 7vw, 32px); }
+}
+@media (max-width: 720px) { .game-body { grid-template-rows: auto minmax(360px,1fr) auto; } }
