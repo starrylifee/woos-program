@@ -146,8 +146,26 @@ class GameBase {
     this.version = 1;
     this.done = false;
     this.paused = false;
+    this.defaultLevel = 1;                       // 게임 고유 레벨 (기획서 원문 범위). 각 게임이 덮어쓴다
+    this.level = 1;
   }
   get scene() { return $('#scene'); }
+  /** 곱셈 문제 하나. 기본 레벨이면 게임의 paramSpec 범위(기획서 원문), 아니면 공용 레벨 표. */
+  makeMul(prev) {
+    if (this.level === this.defaultLevel && this.ownRange) {
+      const r = this.ownRange();
+      let a = rndInt(r.a[0], r.a[1]), b = rndInt(r.b[0], r.b[1]);
+      if (prev && prev.a === a && prev.b === b) b = b === r.b[1] ? r.b[0] : b + 1;
+      return { a, b, ans: a * b };
+    }
+    return PROBLEMS.make(this.level, prev);
+  }
+  setLevel(lv) {
+    if (lv === this.level) return;
+    this.level = lv;
+    PROBLEMS.save(this.id, lv);
+    if (this.onLevelChange) this.onLevelChange();
+  }
   get ctrl() { return $('#interactive-controls-container'); }
   get statPanel() { return $('#stat-panel'); }
   P(k) { return this.params[k]; }
@@ -260,6 +278,14 @@ function closeModal(id) { $('#' + id).hidden = true; if (!anyModalOpen()) resume
 function versionChipsHTML(g) {
   return g.versions.map((v) => `<button type="button" class="vchip${v.v === g.version ? ' on' : ''}" data-v="${v.v}" title="${v.label}">v${v.v}</button>`).join('');
 }
+/** 게임 제목 옆 난이도 칩 — 두 게임이 같은 문제 표(js/problems.js)를 쓴다 */
+function renderLevelChips(g) {
+  const box = $('#gh-levels');
+  if (!box) return;
+  box.innerHTML = PROBLEMS.levels.map((L) =>
+    `<button type="button" class="vchip lv${L.lv === g.level ? ' on' : ''}" data-lv="${L.lv}" title="${L.name} · ${L.hint}${L.lv === g.defaultLevel ? ' · 기획서 기본' : ''}">${L.name}</button>`).join('');
+  $$('.vchip', box).forEach((c) => { c.onclick = () => { SFX.playSelect(); g.setLevel(Number(c.dataset.lv)); renderLevelChips(g); }; });
+}
 function enterGame(id, v) {
   if (currentGame && currentGame.cleanup) currentGame.cleanup();
   Overlay.hide();
@@ -279,6 +305,8 @@ function enterGame(id, v) {
   $$('.vchip', vb).forEach((c) => { c.onclick = () => { SFX.playSelect(); enterGame(id, Number(c.dataset.v)); }; });
   const ver = g.versions.find((x) => x.v === g.version);
   $('#gh-vlabel').textContent = ver ? `${ver.label}${ver.date ? ' · ' + ver.date : ''}` : '';
+  g.level = PROBLEMS.load(id, g.defaultLevel);
+  renderLevelChips(g);
   $('#scene').innerHTML = ''; $('#interactive-controls-container').innerHTML = ''; $('#stat-panel').innerHTML = '';
   showView('game');
   $('#pause-badge').hidden = true;

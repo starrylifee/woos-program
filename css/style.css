@@ -207,6 +207,11 @@ mark { background: linear-gradient(transparent 45%, rgba(29,127,143,.22) 45%, rg
 }
 .vchip.on { background: var(--c, var(--accent)); border-color: var(--c, var(--accent)); color: #fff; }
 .gh-vlabel { margin-left: 8px; }
+.gh-level { margin-top: 7px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.gh-level-label { font-size: 12px; font-weight: 800; letter-spacing: .06em; color: var(--text-3); }
+.gh-levels { display: inline-flex; gap: 4px; flex-wrap: wrap; }
+.vchip.lv { font-family: var(--font); font-size: 12.5px; padding: 4px 10px; }
+.vchip.lv:hover:not(.on) { border-color: var(--text); color: var(--text); }
 
 .gh-review {
   display: flex; align-items: center; gap: 12px;
@@ -464,6 +469,8 @@ mark { background: linear-gradient(transparent 45%, rgba(29,127,143,.22) 45%, rg
   .gh-left { gap: 10px; }
   .game-head h2 { font-size: 18px; }
   .gh-meta { font-size: 12px; }
+  .gh-level { margin-top: 6px; }
+  .vchip.lv { font-size: 12px; padding: 4px 8px; }
   .gh-review { max-width: none; padding: 7px 10px; gap: 8px; }
   .gh-review p { font-size: 13px; }
   .game-body { padding: 8px 8px 10px; gap: 8px; grid-template-rows: auto minmax(260px,1fr) auto; }

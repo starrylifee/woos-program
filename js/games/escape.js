@@ -30,8 +30,11 @@ class GameEscape extends GameBase {
     this.versions = [
       { v: 1, date: '2026-09-06', label: '기획서 그대로', params: {}, note: '종이 기획서의 규칙을 그대로 넣은 첫 판' }
     ];
+    this.defaultLevel = 3;                                // 두 자리 × 두 자리 = 기획서 범위 (aMin~bMax)
     this.resetParams();
   }
+  ownRange() { return { a: [this.P('aMin'), this.P('aMax')], b: [this.P('bMin'), this.P('bMax')] }; }
+  onLevelChange() { if (this.done || this.busy) return; this.newProblem(); this.renderStage(); }
 
   start() {
     this.room = 1; this.restarts = 0; this.solved = 0; this.picks = 0;
@@ -45,8 +48,7 @@ class GameEscape extends GameBase {
   resume() { /* 일시정지 동안 흐른 시간은 빼 준다 */ this.startAt = performance.now() - this.elapsed * 1000; }
 
   newProblem() {
-    const a = rndInt(this.P('aMin'), this.P('aMax')), b = rndInt(this.P('bMin'), this.P('bMax'));
-    const ans = a * b;
+    const { a, b, ans } = this.makeMul(this.problem);
     let diff = rndInt(this.P('decoyMin'), this.P('decoyMax'));
     let decoy = Math.random() < 0.5 ? ans - diff : ans + diff;
     if (decoy <= 0) decoy = ans + diff;

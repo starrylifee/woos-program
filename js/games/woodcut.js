@@ -32,8 +32,11 @@ class GameWoodcut extends GameBase {
     this.versions = [
       { v: 1, date: '2026-09-06', label: '기획서 그대로', params: {}, note: '종이 기획서의 숫자를 그대로 넣은 첫 판' }
     ];
+    this.defaultLevel = 1;                                // 구구단 = 기획서 범위 (danMin~danMax)
     this.resetParams();
   }
+  ownRange() { return { a: [this.P('danMin'), this.P('danMax')], b: [1, 9] }; }
+  onLevelChange() { if (this.done) return; this.input = ''; this.newProblem(); this.renderStage(); }
 
   get tools() {
     return [
@@ -58,11 +61,7 @@ class GameWoodcut extends GameBase {
     this.render();
   }
 
-  newProblem() {
-    let a = rndInt(this.P('danMin'), this.P('danMax')), b = rndInt(1, 9);
-    if (this.problem && this.problem.a === a && this.problem.b === b) b = (b % 9) + 1;
-    this.problem = { a, b, ans: a * b };
-  }
+  newProblem() { this.problem = this.makeMul(this.problem); }
 
   buildScene() {
     this.scene.innerHTML = `
@@ -163,7 +162,7 @@ class GameWoodcut extends GameBase {
   type(k) {
     if (this.busy || this.done) return;
     if (k === 'back') this.input = this.input.slice(0, -1);
-    else if (this.input.length < 3) this.input += k;
+    else if (this.input.length < 4) this.input += k;      // 세 자리 × 한 자리 답은 최대 4자리
     SFX.playKey();
     this.renderStage();
   }
